@@ -24,7 +24,6 @@ export type SearchContextValue = {
     renderMarkdown?: (markdown: string) => React.ReactNode;
     logo?: React.ReactNode;
     isDevMode: boolean;
-    variant: "modal" | "widget";
     theme?: string;
     offsets?: {
         top?: number | string;
