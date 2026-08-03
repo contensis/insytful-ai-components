@@ -257,7 +257,7 @@ npm install
 npm run storybook
 ```
 
-Opens Storybook with live, hot-reloadable demos of both flavours — the React modal and corner-widget variants, and the standalone Web Component — each running against a mocked API response so no backend is required. Storybook is dev tooling only; it is never bundled into the published package.
+Opens Storybook with live, hot-reloadable demos of both flavours — the React modal and the standalone Web Component — each running against a mocked API response so no backend is required. Storybook is dev tooling only; it is never bundled into the published package.
 
 ## Release checklist
 

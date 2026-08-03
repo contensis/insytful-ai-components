@@ -34,14 +34,6 @@
   --insytful-modal-max-width: 784px;
   --insytful-modal-radius: 0px;
 
-  /* Widget surface — only used when Search.Root has variant="widget" */
-  --insytful-widget-width: 380px;
-  --insytful-widget-height: 600px;
-  --insytful-widget-inset-bottom: 24px;
-  --insytful-widget-inset-right: 24px;
-  --insytful-widget-radius: 16px;
-  --insytful-widget-shadow: 0px 12px 40px rgba(0, 0, 0, 0.16);
-
   /* Button - Prompt (suggestion chips) */
   --insytful-btn-prompt-bg-default: #e2eefa;
   --insytful-btn-prompt-bg-hover: #c8daec;
@@ -158,59 +150,6 @@
    Close button: top 12px + 40px height = 52px bottom edge; 60px gives 8px clearance. */
 .insytful-search-dialog-outer:has(.insytful-search-close) .insytful-search-dialog-inner {
   padding-top: 60px;
-}
-
-/* Widget variant — a corner-anchored floating panel instead of the full-bleed
-   modal. Geometry lives entirely in CSS vars (see :host block above) so
-   consumers can resize/reposition it without touching layout code. Root
-   skips the body-scroll-lock effect for this variant (see search-root.tsx),
-   so the host page stays scrollable while the widget is open. */
-.insytful-search-dialog-outer[data-insytful-variant="widget"] {
-  width: var(--insytful-widget-width);
-  height: var(--insytful-widget-height);
-  max-height: calc(100vh - (var(--insytful-widget-inset-bottom) * 2));
-  bottom: var(--insytful-widget-inset-bottom);
-  right: var(--insytful-widget-inset-right);
-  border-radius: var(--insytful-widget-radius);
-  box-shadow: var(--insytful-widget-shadow);
-  transform: translateY(12px) scale(0.98);
-  transform-origin: bottom right;
-}
-.insytful-search-dialog-outer[data-insytful-variant="widget"].insytful-search-dialog-open {
-  transform: translateY(0) scale(1);
-}
-
-/* The library's `md:` responsive steps (bigger title, side-by-side message
-   logo, larger prose) key off the *viewport* width, not the dialog's own
-   width — correct for the full-bleed modal, wrong for a ~380px widget panel
-   sitting inside a wide desktop viewport. These selectors are more specific
-   than the single-class Tailwind utilities they override (so they win
-   regardless of the `md:` media query) and pin widget content to the
-   compact/mobile-tier sizing unconditionally. */
-.insytful-search-dialog-outer[data-insytful-variant="widget"] .insytful-search-empty-state-title {
-  font-size: 24px;
-  line-height: 32px;
-}
-.insytful-search-dialog-outer[data-insytful-variant="widget"] .insytful-search-empty-state-text {
-  font-size: 14px;
-  line-height: 24px;
-}
-.insytful-search-dialog-outer[data-insytful-variant="widget"] .insytful-search-suggestions-item-btn {
-  padding: 8px;
-  font-size: 14px;
-}
-.insytful-search-dialog-outer[data-insytful-variant="widget"] .insytful-search-message-content-outer {
-  font-size: 1em;
-}
-.insytful-search-dialog-outer[data-insytful-variant="widget"] .insytful-search-message-content-inner {
-  display: flex;
-  gap: 12px;
-}
-.insytful-search-dialog-outer[data-insytful-variant="widget"] .insytful-search-message-logo-aside {
-  display: none;
-}
-.insytful-search-dialog-outer[data-insytful-variant="widget"] .insytful-search-message-logo-inline {
-  display: block;
 }
 
 /* Focus rings for interactive elements. Defined here (not via Tailwind
@@ -459,13 +398,6 @@
 .insytful-search-cta-bar > :nth-child(6) { animation-delay: 200ms; }
 .insytful-search-cta-bar > :nth-child(7) { animation-delay: 240ms; }
 .insytful-search-cta-bar > :nth-child(8) { animation-delay: 280ms; }
-
-/* Compact CTA sizing inside the widget variant (matches the other
-   widget-tier overrides above). */
-.insytful-search-dialog-outer[data-insytful-variant="widget"] .insytful-search-cta-btn {
-  padding: 8px 14px;
-  font-size: 13px;
-}
 
 /* Messages list */
 .insytful-search-messages-inner {

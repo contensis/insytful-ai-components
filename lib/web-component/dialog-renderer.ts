@@ -686,8 +686,8 @@ export function renderErrorMessage(
    only scans lib/web-component.ts + lib/web-component/**; classes written in
    lib/shared/ would silently produce no CSS. The stable
    `insytful-search-cta-*` hook classes come from the shared view model so
-   React/WC parity is structural. Focus-visible ring, icon sizing, entrance
-   animation, and the widget-variant override live in web-component.css. */
+   React/WC parity is structural. Focus-visible ring, icon sizing, and
+   entrance animation live in web-component.css. */
 
 const CTA_LABEL_UTILITIES =
   'text-[13px] leading-[20px] mb-[6px] text-[var(--insytful-cta-label-text)]';

@@ -384,12 +384,6 @@
 .insytful-search-cta-bar > :nth-child(7) { animation-delay: 240ms; }
 .insytful-search-cta-bar > :nth-child(8) { animation-delay: 280ms; }
 
-/* Widget-variant sizing — denser chips inside the compact widget surface. */
-.insytful-search-dialog-outer[data-insytful-variant="widget"] .insytful-search-cta-btn {
-  padding: 8px 14px;
-  font-size: 13px;
-}
-
 .insytful-search-skeleton-bar {
   background: var(--insytful-skeleton-bg);
   background-size: 200% 100%;

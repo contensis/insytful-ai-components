@@ -25,7 +25,6 @@ function makeCtx(overrides: Partial<SearchContextValue> = {}): SearchContextValu
     error: null,
     onSend: async () => {},
     isDevMode: false,
-    variant: "modal",
     computedOffsetHeight: 0,
     ...overrides,
   };
