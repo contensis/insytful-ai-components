@@ -74,3 +74,11 @@ export function stubFetch(impl: (...args: Parameters<typeof fetch>) => Promise<u
   vi.stubGlobal("fetch", fn);
   return fn;
 }
+
+/** Parses the JSON request body the hook POSTed on the given fetch call. */
+export function requestBody(
+  fetchMock: ReturnType<typeof stubFetch>,
+  callIndex = 0,
+): Record<string, unknown> {
+  return JSON.parse(fetchMock.mock.calls[callIndex][1]!.body as string);
+}

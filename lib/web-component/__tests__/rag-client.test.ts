@@ -69,6 +69,30 @@ describe("RAGClient.ask", () => {
     localStorage.clear();
   });
 
+  it("POSTs a JSON body to the bare query-collection endpoint", async () => {
+    const fetchFn = vi.fn(async () => sseResponse([sseDoneFrame()]));
+    const client = new RAGClient({
+      baseUrl: "https://api.test",
+      projectId: "proj",
+      sections: "faq,docs",
+      fetchFn: fetchFn as unknown as typeof fetch,
+    });
+
+    await collect(client, "what is this?");
+
+    const [url, init] = fetchFn.mock.calls[0] as unknown as [string, RequestInit];
+    expect(url).toBe("https://api.test/query-collection");
+    expect(init.method).toBe("POST");
+    expect((init.headers as Headers).get("Content-Type")).toBe("application/json");
+    expect(JSON.parse(init.body as string)).toEqual({
+      question: "what is this?",
+      config: "proj",
+      history: true,
+      stream: true,
+      sections: "faq,docs",
+    });
+  });
+
   it("yields { kind: 'token' } events for data frames", async () => {
     const events = await collect(
       clientFor([sseDataFrame("Hello"), sseDataFrame(" world"), sseDoneFrame()]),

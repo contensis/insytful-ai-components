@@ -5,6 +5,7 @@ import { useRAGResponse } from "../use-rag-response";
 import {
   mockExecuteRecaptcha,
   mockFetchResponse,
+  requestBody,
   sseDataFrame,
   sseDoneFrame,
   stubFetch,
@@ -58,6 +59,27 @@ describe("useRAGResponse", () => {
     expect(result.current.loading).toBe(false);
   });
 
+  it("POSTs a JSON body to the bare query-collection endpoint", async () => {
+    const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [] }));
+
+    const { result } = renderHook(() => useRAGResponse("my-config", "https://api.example.com"));
+
+    await act(async () => {
+      await result.current.ask("question");
+    });
+
+    expect(fetchMock.mock.calls[0][0]).toBe("https://api.example.com/query-collection");
+    const init = fetchMock.mock.calls[0][1]!;
+    expect(init.method).toBe("POST");
+    expect((init.headers as Headers).get("Content-Type")).toBe("application/json");
+    expect(requestBody(fetchMock)).toEqual({
+      question: "question",
+      config: "my-config",
+      history: false,
+      stream: true,
+    });
+  });
+
   it("serializes the sections param when provided", async () => {
     const fetchMock = stubFetch(async () => mockFetchResponse({ chunks: [] }));
 
@@ -67,8 +89,7 @@ describe("useRAGResponse", () => {
       await result.current.ask("question", ["faq", "docs"]);
     });
 
-    const requestedUrl = new URL(fetchMock.mock.calls[0][0] as string);
-    expect(requestedUrl.searchParams.get("sections")).toBe("faq,docs");
+    expect(requestBody(fetchMock).sections).toBe("faq,docs");
   });
 
   it("omits the sections param when none are provided", async () => {
@@ -80,8 +101,7 @@ describe("useRAGResponse", () => {
       await result.current.ask("question");
     });
 
-    const requestedUrl = new URL(fetchMock.mock.calls[0][0] as string);
-    expect(requestedUrl.searchParams.has("sections")).toBe(false);
+    expect(requestBody(fetchMock)).not.toHaveProperty("sections");
   });
 
   it("round-trips the session id via localStorage and the X-Session-Id header", async () => {

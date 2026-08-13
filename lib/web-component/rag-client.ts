@@ -65,18 +65,23 @@ export class RAGClient {
     question: string,
     signal?: AbortSignal,
   ): AsyncGenerator<RAGStreamEvent, void, void> {
-    const params = new URLSearchParams({
+    // POST body — the API moved off query-string params, so there is no
+    // URL length ceiling on `question` and no encoding to get wrong.
+    const body: Record<string, unknown> = {
       question,
       config: this.projectId,
-      history: 'true',
-      stream: 'true',
-    });
+      history: true,
+      stream: true,
+    };
 
     if (this.sections) {
-      params.set('sections', this.sections);
+      body.sections = this.sections;
     }
 
-    const headers = new Headers({ Accept: 'text/event-stream' });
+    const headers = new Headers({
+      Accept: 'text/event-stream',
+      'Content-Type': 'application/json',
+    });
 
     const sid = localStorage.getItem(SESSION_KEY);
     if (sid) {
@@ -84,10 +89,11 @@ export class RAGClient {
     }
 
     const response = await this.fetchFn(
-      `${this.baseUrl}/query-collection?${params.toString()}`,
+      `${this.baseUrl}/query-collection`,
       {
-        method: 'GET',
+        method: 'POST',
         headers,
+        body: JSON.stringify(body),
         signal,
       }
     );

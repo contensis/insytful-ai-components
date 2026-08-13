@@ -1,5 +1,28 @@
 # Changelog
 
+## 3.2.0 — 2026-08-13
+
+### Changed
+
+- **`query-collection` requests are now `POST` with a JSON body**, following the AI Search API's move off `GET`. Every parameter (`question`, `config`, `history`, `stream`, `sections`) moved from the query string into the body, sent with `Content-Type: application/json`. This removes the URL length ceiling that previously capped how long a question could be.
+
+  **This release requires an AI Search API that accepts `POST` on `/query-collection`.** No consumer code changes: the components, hooks, props, and `RAGClient.ask()` signature are all unchanged — only the request this library makes on your behalf. Script-tag consumers pinned to `…@3/dist/insytful-search.js` pick this up automatically.
+
+  Applies to all three request paths: `useRAGConversation`, `useRAGResponse`, and the Web Component's `RAGClient`.
+
+- Session and reCAPTCHA behaviour is unchanged — `X-Session-Id` is still read from and written back to `localStorage`, and `X-Recaptcha-Token` is still sent when a site key is configured. Both are enforced on `POST` server-side.
+
+### Notes
+
+- Streaming was unaffected. This library has never used `EventSource` (which cannot issue `POST`); `readSSEFrames` already parsed SSE off `fetch` + `ReadableStream`, including cross-chunk frame buffering, per-frame `event:` scoping, and `:` keepalive comments.
+- Cross-origin deployments should expect a CORS preflight (`OPTIONS`) on each request, which the API allows.
+
+## 3.1.0 — 2026-08-03
+
+### Removed
+
+- **The `widget` portal variant.** `Search.Root`'s `variant` prop and the `--insytful-widget-*` CSS variables are gone; the search UI is always the full-bleed modal, which locks body scroll while open. Consumers passing `variant="modal"` can drop the prop; consumers passing `variant="widget"` have no replacement.
+
 ## 3.0.1 — 2026-07-16
 
 ### Fixed

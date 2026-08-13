@@ -58,19 +58,23 @@ export const useRAGConversation = (
       setError(null);
 
       try {
-        const params = new URLSearchParams({
+        // POST body — the API moved off query-string params, so there is no
+        // URL length ceiling on `question` and no encoding to get wrong.
+        const body: Record<string, unknown> = {
           question,
           config,
-          history: String(true),
-          stream: String(true),
-        });
+          history: true,
+          stream: true,
+        };
 
         if (sections && sections?.length >= 1) {
-          params.set("sections", sections.join(","));
+          body.sections = sections.join(",");
         }
 
-        const query = params.toString();
-        const headers = new Headers({ Accept: "text/event-stream" });
+        const headers = new Headers({
+          Accept: "text/event-stream",
+          "Content-Type": "application/json",
+        });
 
         // only include token if we generated one
         if (recaptchaToken) headers.append("X-Recaptcha-Token", recaptchaToken);
@@ -78,9 +82,10 @@ export const useRAGConversation = (
         const sid = localStorage.getItem("rag-session-id");
         if (sid) headers.append("X-Session-Id", sid);
 
-        const response = await fetch(`${baseUrl}/query-collection?${query}`, {
-          method: "GET",
+        const response = await fetch(`${baseUrl}/query-collection`, {
+          method: "POST",
           headers,
+          body: JSON.stringify(body),
           signal,
         });
 
